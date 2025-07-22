@@ -22,7 +22,7 @@ export async function fetchUsersDataTable(token, params) {
 }
 
 export async function fetchUsersPaginated(token, page = 1, pageSize = 10, filters = {}) {
-  const url = new URL(`${config.API_BASE}/users`);
+  const url = new URL(`${config.API_BASE}/providers`);
   url.searchParams.append('start', (page - 1) * pageSize);
   url.searchParams.append('length', pageSize);
 

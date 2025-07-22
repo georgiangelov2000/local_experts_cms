@@ -8,8 +8,8 @@ export async function fetchCategories(token) {
   return data.data || [];
 }
 
-export async function fetchServiceCategories(token) {
-  const res = await fetch(`${config.API_BASE}/service-categories`, {
+export async function fetchServiceCategories(token, category) {
+  const res = await fetch(`${config.API_BASE}/categories/${category}/service-categories`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   const data = await res.json();
