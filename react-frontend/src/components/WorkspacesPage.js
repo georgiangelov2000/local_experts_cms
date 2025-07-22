@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, Button, TextInput, Spinner, Modal, Select, Alert } from 'flowbite-react';
 import { Link } from 'react-router-dom';
 
-const API_BASE = 'http://localhost:81/api/v1';
+const API_BASE = 'http://localhost:80/api/cms/v1';
 
 function WorkspacesPage({ token }) {
   const [workspaces, setWorkspaces] = useState([]);

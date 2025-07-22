@@ -7,7 +7,7 @@ import * as yup from 'yup';
 import { fetchCategories, fetchServiceCategories } from '../../../api/filters';
 import ReactSelect from 'react-select';
 
-const API_BASE = 'http://localhost:81/api/v1';
+const API_BASE = 'http://localhost:80/api/cms/v1';
 
 const schema = yup.object().shape({
   email: yup.string().email('Invalid email').required('Email is required'),

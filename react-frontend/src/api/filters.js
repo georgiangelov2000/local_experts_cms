@@ -1,7 +1,7 @@
-const API_BASE = 'http://localhost:81/api/v1';
+import config from '../config';
 
 export async function fetchCategories(token) {
-  const res = await fetch(`${API_BASE}/categories`, {
+  const res = await fetch(`${config.API_BASE}/categories`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   const data = await res.json();
@@ -9,7 +9,7 @@ export async function fetchCategories(token) {
 }
 
 export async function fetchServiceCategories(token) {
-  const res = await fetch(`${API_BASE}/service-categories`, {
+  const res = await fetch(`${config.API_BASE}/service-categories`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   const data = await res.json();
@@ -17,7 +17,7 @@ export async function fetchServiceCategories(token) {
 }
 
 export async function fetchWorkstations(token) {
-  const res = await fetch(`${API_BASE}/workspaces`, {
+  const res = await fetch(`${config.API_BASE}/workspaces`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   const data = await res.json();
@@ -25,7 +25,7 @@ export async function fetchWorkstations(token) {
 }
 
 export async function fetchServices(token) {
-  const res = await fetch(`${API_BASE}/services`, {
+  const res = await fetch(`${config.API_BASE}/services`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   const data = await res.json();

@@ -1,41 +1,4 @@
 services:
-  # Laravel CMS PHP-FPM
-  app-cms:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: app-cms
-    working_dir: /var/www
-    volumes:
-      - ./src:/var/www
-    networks:
-      - localexperts_cms
-
-  # Artisan CLI for CMS
-  artisancms:
-    image: php:8.2-cli
-    container_name: artisancms
-    working_dir: /var/www
-    volumes:
-      - ./src:/var/www
-    entrypoint: ["php", "artisan"]
-    networks:
-      - localexperts_cms
-
-  # Nginx for CMS
-  nginxcms:
-    image: nginx:latest
-    container_name: nginxcms
-    ports:
-      - "127.0.0.1:8080:80"
-    volumes:
-      - ./src:/var/www
-      - ./docker/nginx/conf.d/cms.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - app-cms
-    networks:
-      - localexperts_cms
-
   # React for CMS
   reactcms:
     image: node:20-alpine
@@ -47,9 +10,3 @@ services:
       - "5174:5173" # Different from main React app
     # command: sh -c "npm install && npm run dev"
     command: sh -c "npm install && npm start"
-    networks:
-      - localexperts_cms
-
-networks:
-  localexperts_cms:
-    driver: bridge

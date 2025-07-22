@@ -1,58 +1,67 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-
-const API_BASE = 'http://localhost:81';
+import React, { createContext, useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import config from '../config';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(localStorage.getItem('token') || '');
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (token) {
-      fetch(`${API_BASE}/api/v1/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then(res => res.ok ? res.json() : null)
-        .then(data => setUser(data))
-        .catch(() => setUser(null));
-    } else {
-      setUser(null);
-    }
-  }, [token]);
+  // ✅ Custom fetcher that adds token automatically
+  const fetcher = async (url) => {
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error('Unauthorized');
+    return res.json();
+  };
 
+  // ✅ Use React Query to fetch current user
+  const {
+    data: user,
+    isLoading,
+    isError
+  } = useQuery({
+    queryKey: ['me', token],
+    queryFn: () => fetcher(`${config.AUTH_BASE}/me`),
+    enabled: !!token // Only fetch if token exists
+  });
+
+  // ✅ Login method
   const login = async (email, password, setError) => {
-    setLoading(true);
-    setError && setError('');
     try {
-      const res = await fetch(`${API_BASE}/api/v1/login`, {
+      const res = await fetch(`${config.AUTH_BASE}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
+
       const data = await res.json();
       if (res.ok && data.token) {
         setToken(data.token);
         localStorage.setItem('token', data.token);
-        setUser(data.user);
+        queryClient.invalidateQueries(['me']); // Refetch user after login
       } else {
         setError && setError(data.error || 'Login failed');
       }
     } catch (err) {
       setError && setError('Network error');
     }
-    setLoading(false);
   };
 
+  // ✅ Logout method
   const logout = () => {
     setToken('');
-    setUser(null);
     localStorage.removeItem('token');
+    queryClient.removeQueries(['me']);
+    navigate('/login');
   };
 
   return (
-    <AuthContext.Provider value={{ token, user, login, logout, loading }}>
+    <AuthContext.Provider value={{ token, user, login, logout, isLoading, isError }}>
       {children}
     </AuthContext.Provider>
   );
@@ -60,4 +69,4 @@ export function AuthProvider({ children }) {
 
 export function useAuth() {
   return useContext(AuthContext);
-} 
+}

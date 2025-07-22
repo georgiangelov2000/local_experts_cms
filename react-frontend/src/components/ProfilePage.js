@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, Spinner, Button } from 'flowbite-react';
 import { useAuth } from './AuthContext';
 import { Link } from 'react-router-dom';
-
-const API_BASE = 'http://localhost:81/api/v1';
+import config from '../config';
 
 function ProfilePage() {
   const { token, user } = useAuth();
@@ -11,7 +10,7 @@ function ProfilePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_BASE}/me`, {
+    fetch(`${config.API_BASE}/me`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => res.json())

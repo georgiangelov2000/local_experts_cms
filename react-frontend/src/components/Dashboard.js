@@ -3,7 +3,7 @@ import { Card, Button, Spinner } from 'flowbite-react';
 import { HiUserGroup, HiCollection, HiViewGrid } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 
-const API_BASE = 'http://localhost:81/api/v1';
+const API_BASE = 'http://localhost:80/api/cms/v1';
 
 function Dashboard({ token }) {
   const [stats, setStats] = useState(null);
@@ -14,7 +14,7 @@ function Dashboard({ token }) {
       setLoading(true);
       try {
         const [usersRes, categoriesRes, workspacesRes] = await Promise.all([
-          fetch(`${API_BASE}/users?start=0&length=1`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`${API_BASE}/providers?start=0&length=1`, { headers: { Authorization: `Bearer ${token}` } }),
           fetch(`${API_BASE}/categories`, { headers: { Authorization: `Bearer ${token}` } }),
           fetch(`${API_BASE}/workspaces`, { headers: { Authorization: `Bearer ${token}` } }),
         ]);
@@ -54,7 +54,7 @@ function Dashboard({ token }) {
             <HiUserGroup className="w-8 h-8 text-green-600 mb-2" />
             <div className="text-2xl font-bold">{stats.serviceProviders}</div>
             <div className="text-gray-500">Service Providers</div>
-            <Button as={Link} to="/users?role=2" size="xs" color="info" className="mt-2">View</Button>
+            <Button as={Link} to="/providers?role=2" size="xs" color="info" className="mt-2">View</Button>
           </Card>
           <Card className="flex flex-col items-center text-center">
             <HiCollection className="w-8 h-8 text-purple-600 mb-2" />

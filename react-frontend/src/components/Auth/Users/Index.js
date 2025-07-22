@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { fetchUsersPaginated } from '../../../api/users';
+import config from '../../../config';
 import { fetchCategories, fetchServiceCategories, fetchWorkstations, fetchServices } from '../../../api/filters';
-import { Button, Select, TextInput, Card, Pagination, RangeSlider, Avatar } from 'flowbite-react';
+import { Button, Select, TextInput, Card, Pagination, RangeSlider, Avatar, Modal } from 'flowbite-react';
 import { Link } from 'react-router-dom';
 
 function UsersIndex({ token }) {
@@ -20,6 +21,23 @@ function UsersIndex({ token }) {
   const [workstations, setWorkstations] = useState([]);
   const [services, setServices] = useState([]);
   const pageSize = 10;
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+
+  // Delete user API call
+  async function deleteUser(userId) {
+    try {
+      const res = await fetch(`${config.API_BASE}/providers/${userId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error('Failed to delete user');
+      setUsers(prev => prev.filter(u => u.id !== userId));
+      alert('User deleted successfully');
+    } catch (err) {
+      alert('Error deleting user: ' + err.message);
+    }
+  }
 
   // Fetch filter options on mount
   useEffect(() => {
@@ -53,9 +71,21 @@ function UsersIndex({ token }) {
   const handleView = (user) => alert(`View user ${user.id}`);
   const handleEdit = (user) => alert(`Edit user ${user.id}`);
   const handleDelete = (user) => {
-    if (window.confirm(`Delete user ${user.id}?`)) {
-      alert('Delete logic here');
+    setUserToDelete(user);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (userToDelete) {
+      await deleteUser(userToDelete.id);
+      setShowDeleteModal(false);
+      setUserToDelete(null);
     }
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
+    setUserToDelete(null);
   };
 
   return (
@@ -186,6 +216,41 @@ function UsersIndex({ token }) {
           showIcons
         />
       </div>
+      {/* Delete Confirmation Modal */}
+      <Modal show={showDeleteModal} onClose={handleCancelDelete} popup size="md">
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <svg
+              aria-hidden="true"
+              className="mx-auto mb-4 text-gray-400 w-14 h-14 dark:text-gray-200"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 9v2m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"
+              />
+            </svg>
+            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+              Are you sure you want to delete user{' '}
+              <span className="font-bold">{userToDelete?.email || userToDelete?.id}</span>?
+            </h3>
+            <div className="flex justify-center gap-4">
+              <Button color="failure" onClick={handleConfirmDelete}>
+                Yes, delete
+              </Button>
+              <Button color="gray" onClick={handleCancelDelete}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </Card>
   );
 }

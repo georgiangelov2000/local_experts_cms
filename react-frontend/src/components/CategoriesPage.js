@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, TextInput, Pagination } from 'flowbite-react';
 
-const API_BASE = 'http://localhost:81/api/v1';
+const API_BASE = 'http://localhost:80/api/cms/v1';
 
 function CategoriesPage({ token }) {
   const [categories, setCategories] = useState([]);
