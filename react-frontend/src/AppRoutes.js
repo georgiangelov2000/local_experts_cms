@@ -7,7 +7,7 @@ import UsersIndex from './components/Auth/Users/Index';
 import UserEdit from './components/Auth/Users/Edit';
 import UserAdd from './components/Auth/Users/Add';
 import Dashboard from './components/Dashboard';
-import WorkspacesPage from './components/WorkspacesPage';
+import WorkspacesIndex from './components/Auth/Workspaces/Index';
 import ProfilePage from './components/ProfilePage';
 import Login from './components/Login';
 
@@ -31,7 +31,7 @@ function AppRoutes() {
         <Route path="/users/add" element={<UserAdd token={token} />} />
         <Route path="/users/:id" element={<UserView token={token} />} />
         <Route path="/users/:id/edit" element={<UserEdit token={token} />} />
-        <Route path="/workspaces" element={<WorkspacesPage token={token} />} />
+        <Route path="/workspaces" element={<WorkspacesIndex token={token} />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
