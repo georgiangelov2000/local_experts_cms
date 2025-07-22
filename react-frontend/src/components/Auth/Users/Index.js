@@ -75,7 +75,7 @@ export function UsersIndex({ token }) {
     fetchUsersPaginated(token, page, pageSize, queryFilters)
       .then((data) => {
         setUsers(data.data || []);
-        setTotal(data.recordsTotal || 0);
+        setTotal(data.total || 0);
         setLoading(false);
       })
       .catch(() => {
@@ -85,7 +85,6 @@ export function UsersIndex({ token }) {
   }, [token, page, filters]);
 
   const totalPages = Math.ceil(total / pageSize);
-
   // Delete user API call
   async function deleteUser(userId) {
     try {
